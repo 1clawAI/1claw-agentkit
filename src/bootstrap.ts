@@ -56,7 +56,7 @@ export async function bootstrapSecrets(
   }
 
   const client = new OneclawClient({
-    baseUrl: cfg.apiUrl,
+    baseUrl: cfg.apiUrl!,
     agentId: cfg.agentId,
     apiKey: cfg.agentApiKey,
   });
@@ -74,7 +74,7 @@ export async function bootstrapSecrets(
     entries.map(async ([key, path]) => {
       try {
         const resp = await client.secrets.get(vaultId, `${prefix}${path}`);
-        return { key, value: resp.value };
+        return { key, value: resp.data?.value };
       } catch {
         return { key, value: undefined };
       }
@@ -102,8 +102,8 @@ export async function bootstrapSecrets(
 }
 
 async function resolveVaultId(client: OneclawClient): Promise<string> {
-  const vaults = await client.vaults.list();
-  const v = vaults.vaults?.[0];
+  const resp = await client.vault.list();
+  const v = resp.data?.vaults?.[0];
   if (!v) {
     throw new Error(
       "No vaults found for this agent. Create a vault and store your Base MCP secrets."

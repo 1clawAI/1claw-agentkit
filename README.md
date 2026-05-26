@@ -218,10 +218,21 @@ const wallet = createBaseMainnetProvider({
 // Send a transaction (TEE-signed, guardrail-enforced)
 const result = await wallet.sendTransaction({
   to: "0xRecipient",
-  value: "1000000000000000", // 0.001 ETH in wei
+  value: "0.001", // ETH
 });
 
 console.log(`TX: ${result.txHash} (${result.status})`);
+
+// Sign a message (EIP-191, key never leaves TEE)
+const sig = await wallet.signMessage("Hello from my agent");
+console.log(`Signature: ${sig.signature}`);
+
+// Sign without broadcasting (agent submits to its own RPC)
+const signedTx = await wallet.signTransaction({
+  to: "0xContract",
+  value: "0",
+  data: "0xabcdef...",
+});
 ```
 
 ## Examples

@@ -8,7 +8,6 @@
  */
 
 import { OneclawClient } from "@1claw/sdk";
-import { randomUUID } from "crypto";
 
 export interface IntentsWalletConfig {
   apiUrl?: string;
@@ -79,16 +78,13 @@ export class OneclawIntentsWalletProvider {
   async getAddress(): Promise<string> {
     if (this._address) return this._address;
 
-    const agent = await this.client.agents.get(this.agentId);
-    const signingKey = agent.signing_keys?.find(
-      (k: { chain: string; is_active: boolean }) =>
-        k.chain === this.chain && k.is_active
+    const keysResp = await this.client.signingKeys.list(this.agentId);
+    const signingKey = keysResp.data?.keys?.find(
+      (k) => k.chain === this.chain && k.is_active
     );
 
     if (signingKey?.address) {
       this._address = signingKey.address;
-    } else if (agent.evm_address) {
-      this._address = agent.evm_address;
     } else {
       throw new Error(
         `No signing key found for chain "${this.chain}". ` +
@@ -100,67 +96,66 @@ export class OneclawIntentsWalletProvider {
   }
 
   async sendTransaction(tx: TransactionRequest): Promise<TransactionResult> {
-    const idempotencyKey = randomUUID();
+    const resp = await this.client.agents.submitTransaction(
+      this.agentId,
+      {
+        chain: this.chain,
+        to: tx.to,
+        value: tx.value || "0",
+        data: tx.data,
+        max_fee_per_gas: tx.maxFeePerGas,
+        max_priority_fee_per_gas: tx.maxPriorityFeePerGas,
+        nonce: tx.nonce,
+        simulate_first: this.simulateFirst,
+      },
+    );
 
-    const resp = await this.client.agents.submitTransaction(this.agentId, {
-      chain: this.chain,
-      chain_id: this.chainId,
-      to: tx.to,
-      value_wei: tx.value || "0",
-      data: tx.data,
-      max_fee_per_gas: tx.maxFeePerGas,
-      max_priority_fee_per_gas: tx.maxPriorityFeePerGas,
-      nonce: tx.nonce,
-      simulate_first: this.simulateFirst,
-      idempotency_key: idempotencyKey,
-    });
-
+    const data = resp.data!;
     return {
-      txHash: resp.tx_hash,
-      status: resp.status,
-      signedTx: resp.signed_tx,
-      simulationResult: resp.simulation_result,
+      txHash: data.tx_hash || "",
+      status: data.status,
+      signedTx: data.signed_tx,
+      simulationResult: undefined,
     };
   }
 
   async signTransaction(tx: TransactionRequest): Promise<string> {
-    const resp = await this.client.agents.signIntent(this.agentId, {
+    const resp = await this.client.agents.sign(this.agentId, {
       intent_type: "transaction",
       chain: this.chain,
-      chain_id: this.chainId,
       to: tx.to,
-      value_wei: tx.value || "0",
+      value: tx.value || "0",
       data: tx.data,
       max_fee_per_gas: tx.maxFeePerGas,
       max_priority_fee_per_gas: tx.maxPriorityFeePerGas,
       nonce: tx.nonce,
     });
 
-    return resp.signed_tx;
+    return resp.data!.signed_tx || "";
   }
 
   async signMessage(message: string): Promise<SignMessageResult> {
     const hex = Buffer.from(message, "utf-8").toString("hex");
 
-    const resp = await this.client.agents.signIntent(this.agentId, {
+    const resp = await this.client.agents.sign(this.agentId, {
       intent_type: "personal_sign",
       chain: this.chain,
       message: hex,
     });
 
+    const data = resp.data!;
     return {
-      signature: resp.signature,
-      messageHash: resp.message_hash,
-      from: resp.from,
+      signature: data.signature || "",
+      messageHash: data.message_hash || "",
+      from: data.from,
     };
   }
 
   async simulateTransaction(tx: TransactionRequest) {
     return this.client.agents.simulateTransaction(this.agentId, {
       chain: this.chain,
-      chain_id: this.chainId,
       to: tx.to,
-      value_wei: tx.value || "0",
+      value: tx.value || "0",
       data: tx.data,
     });
   }
