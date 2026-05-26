@@ -1,4 +1,4 @@
-# @1claw/base-mcp-secure
+# @1claw/agentkit
 
 **Secure AgentKit wallet for autonomous AI agents on Base.**
 
@@ -8,7 +8,7 @@ A hardened MCP server built on [Coinbase AgentKit](https://github.com/coinbase/a
 
 ## Which Should I Use?
 
-| | [mcp.base.org](https://docs.base.org/ai-agents/quickstart) | @1claw/base-mcp-secure |
+| | [mcp.base.org](https://docs.base.org/ai-agents/quickstart) | @1claw/agentkit |
 |--|--|--|
 | **Use case** | Interactive (human in the loop) | Autonomous (no human per-tx) |
 | **Signing** | OAuth via Base Account, you approve each tx | TEE-backed Intents API, guardrails approve |
@@ -33,7 +33,7 @@ Without guardrails:
 ## The Solution
 
 ```
-Agent ─► Shroud TEE ─► LLM ─► base-mcp-secure (AgentKit + Vault) ─► Intents API ─► Base
+Agent ─► Shroud TEE ─► LLM ─► 1claw-agentkit (AgentKit + Vault) ─► Intents API ─► Base
 ```
 
 | Surface | What it does | How |
@@ -60,7 +60,7 @@ The setup wizard asks for your 1Claw human API key (`1ck_...`) and automatically
 - A signing key on Base chain
 - An access policy granting the agent read on `base-mcp/*`
 
-It outputs a ready-to-paste MCP config with both `base-mcp-secure` and the `1claw` MCP server paired together.
+It outputs a ready-to-paste MCP config with both `1claw-agentkit` and the `1claw` MCP server paired together.
 
 > Get your API key at [1claw.xyz → Settings → API Keys](https://1claw.xyz/settings/api-keys)
 
@@ -72,7 +72,7 @@ It outputs a ready-to-paste MCP config with both `base-mcp-secure` and the `1cla
 #### 1. Install
 
 ```bash
-npm install @1claw/base-mcp-secure
+npm install @1claw/agentkit
 ```
 
 #### 2. Store your secrets in 1Claw
@@ -106,9 +106,9 @@ The setup script outputs this for you, but here's the config manually. **Both MC
 ```json
 {
   "mcpServers": {
-    "base-mcp-secure": {
+    "1claw-agentkit": {
       "command": "npx",
-      "args": ["@1claw/base-mcp-secure"],
+      "args": ["@1claw/agentkit"],
       "env": {
         "ONECLAW_AGENT_API_KEY": "ocv_your_key_here"
       }
@@ -128,17 +128,17 @@ The setup script outputs this for you, but here's the config manually. **Both MC
 
 ## Why Both MCPs?
 
-The `base-mcp-secure` and `1claw` MCP servers use the **same agent credentials** and complement each other:
+The `1claw-agentkit` and `1claw` MCP servers use the **same agent credentials** and complement each other:
 
 | MCP Server | What it provides |
 |-----------|-----------------|
-| **base-mcp-secure** | All AgentKit onchain tools (transfers, contract calls, ERC-20, Morpho, NFTs, Farcaster) — but TEE-signed and guardrail-enforced |
+| **1claw-agentkit** | All AgentKit onchain tools (transfers, contract calls, ERC-20, Morpho, NFTs, Farcaster) — but TEE-signed and guardrail-enforced |
 | **1claw** | 27+ vault management tools (put_secret, get_secret, rotate_and_store, simulate_transaction, sign_message, sign_typed_data, grant_access, share_secret, platform tools, etc.) |
 
 Together they enable flows like:
 - *"Store my new Alchemy key in the vault, then check my Base wallet balance"* — uses both MCPs in one conversation
 - *"Rotate my Coinbase API key and update it in the vault"* — 1claw MCP handles the rotation
-- *"Simulate this Morpho deposit, then execute it if profitable"* — simulate via 1claw, execute via base-mcp-secure
+- *"Simulate this Morpho deposit, then execute it if profitable"* — simulate via 1claw, execute via 1claw-agentkit
 - *"Share read access to my neynar key with my teammate's agent"* — 1claw MCP handles sharing
 
 ## How It Works
@@ -202,7 +202,7 @@ import {
   bootstrapSecrets,
   OneclawIntentsWalletProvider,
   createBaseMainnetProvider,
-} from "@1claw/base-mcp-secure";
+} from "@1claw/agentkit";
 
 // Resolve secrets from vault
 const secrets = await bootstrapSecrets({
@@ -248,7 +248,7 @@ const signedTx = await wallet.signTransaction({
 
 ## Security Comparison
 
-| Threat Vector | Unguarded AgentKit | base-mcp-secure |
+| Threat Vector | Unguarded AgentKit | @1claw/agentkit |
 |--------------|----------|-----------------|
 | Seed phrase on disk | `.env` / config JSON | Never touches disk (Vault + MPC) |
 | Prompt injection → drain | Unguarded | Shroud blocks + guardrails cap |
