@@ -68,15 +68,15 @@ npx @1claw/cli login
 
 ```bash
 # Create a vault for your agent secrets
-npx @1claw/cli vault create --name "base-agent-keys"
+1claw vault create --name "base-agent-keys"
 
 # Store each secret (they get encrypted with HSM-backed envelope encryption)
-npx @1claw/cli secret put base-mcp/seed-phrase --value "your seed phrase here"
-npx @1claw/cli secret put base-mcp/coinbase-api-key-name --value "organizations/xxx/apiKeys/yyy"
-npx @1claw/cli secret put base-mcp/coinbase-api-private-key --value "-----BEGIN EC PRIVATE KEY-----..."
-npx @1claw/cli secret put base-mcp/alchemy-api-key --value "abcdef123456"
-npx @1claw/cli secret put base-mcp/openrouter-api-key --value "sk-or-v1-..."
-npx @1claw/cli secret put base-mcp/neynar-api-key --value "NEYNAR-..."
+1claw secret put agentkit/seed-phrase --value "your seed phrase here"
+1claw secret put agentkit/coinbase-api-key-name --value "organizations/xxx/apiKeys/yyy"
+1claw secret put agentkit/coinbase-api-private-key --value "-----BEGIN EC PRIVATE KEY-----..."
+1claw secret put agentkit/alchemy-api-key --value "abcdef123456"
+1claw secret put agentkit/openrouter-api-key --value "sk-or-v1-..."
+1claw secret put agentkit/neynar-api-key --value "NEYNAR-..."
 ```
 
 ### Step 3: Register an Agent (2 min)
@@ -97,11 +97,11 @@ Save the `ocv_` API key that's returned — this is the only credential you put 
 ### Step 4: Create an Access Policy (1 min)
 
 ```bash
-npx @1claw/cli policy create \
+1claw policy create \
   --vault-id YOUR_VAULT_ID \
   --principal-type agent \
   --principal-id YOUR_AGENT_ID \
-  --paths "base-mcp/*" \
+  --paths "agentkit/*" \
   --permissions read
 ```
 

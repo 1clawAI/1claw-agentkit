@@ -58,7 +58,7 @@ The setup wizard asks for your 1Claw human API key (`1ck_...`) and automatically
 - A vault for your agent's secrets
 - An agent with Intents API + Shroud + Base guardrails
 - A signing key on Base chain
-- An access policy granting the agent read on `base-mcp/*`
+- An access policy granting the agent read on `agentkit/*`
 
 It outputs a ready-to-paste MCP config with both `1claw-agentkit` and the `1claw` MCP server paired together.
 
@@ -78,11 +78,12 @@ npm install @1claw/agentkit
 #### 2. Store your secrets in 1Claw
 
 ```bash
-npx @1claw/cli login
-npx @1claw/cli vault create --name "base-agent-keys"
-npx @1claw/cli secret put base-mcp/seed-phrase --value "your seed phrase"
-npx @1claw/cli secret put base-mcp/coinbase-api-private-key --value "-----BEGIN EC..."
-npx @1claw/cli secret put base-mcp/alchemy-api-key --value "your_key"
+npm install -g @1claw/cli
+1claw login
+1claw vault create --name "base-agent-keys"
+1claw secret put agentkit/seed-phrase --value "your seed phrase"
+1claw secret put agentkit/coinbase-api-private-key --value "-----BEGIN EC..."
+1claw secret put agentkit/alchemy-api-key --value "your_key"
 ```
 
 #### 3. Create a secured agent
@@ -179,20 +180,20 @@ Together they enable flows like:
 | `ONECLAW_AGENT_ID` | No | Explicit agent ID (auto-resolved from key if omitted) |
 | `ONECLAW_API_URL` | No | API URL (default: `https://api.1claw.xyz`) |
 | `ONECLAW_VAULT_ID` | No | Explicit vault ID (auto-resolved if omitted) |
-| `ONECLAW_SECRET_PREFIX` | No | Vault path prefix (default: `base-mcp/`) |
+| `ONECLAW_SECRET_PREFIX` | No | Vault path prefix (default: `agentkit/`) |
 | `ONECLAW_CHAIN_ID` | No | Chain ID — `84532` for Base Sepolia (default: `8453` Base mainnet) |
 
 ### Vault Secret Paths
 
-Store secrets under `base-mcp/` (configurable via `ONECLAW_SECRET_PREFIX`):
+Store secrets under `agentkit/` (configurable via `ONECLAW_SECRET_PREFIX`):
 
 ```
-base-mcp/seed-phrase
-base-mcp/coinbase-api-key-name
-base-mcp/coinbase-api-private-key
-base-mcp/alchemy-api-key
-base-mcp/openrouter-api-key
-base-mcp/neynar-api-key
+agentkit/seed-phrase
+agentkit/coinbase-api-key-name
+agentkit/coinbase-api-private-key
+agentkit/alchemy-api-key
+agentkit/openrouter-api-key
+agentkit/neynar-api-key
 ```
 
 ## Use as a Library

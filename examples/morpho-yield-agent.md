@@ -33,9 +33,9 @@ Claude/Cursor
 ### 2. Store secrets in the vault
 
 ```bash
-1claw secret put base-mcp/seed-phrase --value "your twelve word seed phrase here"
-1claw secret put base-mcp/alchemy-api-key --value "your_alchemy_key"
-1claw secret put base-mcp/neynar-api-key --value "your_neynar_key"
+1claw secret put agentkit/seed-phrase --value "your twelve word seed phrase here"
+1claw secret put agentkit/alchemy-api-key --value "your_alchemy_key"
+1claw secret put agentkit/neynar-api-key --value "your_neynar_key"
 ```
 
 ### 3. Create an access policy
@@ -45,7 +45,7 @@ Claude/Cursor
   --vault-id $VAULT_ID \
   --principal-type agent \
   --principal-id $AGENT_ID \
-  --paths "base-mcp/*" \
+  --paths "agentkit/*" \
   --permissions read
 ```
 

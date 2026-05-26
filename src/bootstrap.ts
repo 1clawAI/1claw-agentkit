@@ -21,7 +21,7 @@ export interface BootstrapConfig {
   agentId?: string;
   agentApiKey?: string;
   vaultId?: string;
-  /** Secret path prefix in the vault (default: "base-mcp/") */
+  /** Secret path prefix in the vault (default: "agentkit/") */
   pathPrefix?: string;
 }
 
@@ -40,7 +40,7 @@ function resolveConfig(): BootstrapConfig {
     agentId: process.env.ONECLAW_AGENT_ID,
     agentApiKey: process.env.ONECLAW_AGENT_API_KEY,
     vaultId: process.env.ONECLAW_VAULT_ID,
-    pathPrefix: process.env.ONECLAW_SECRET_PREFIX || "base-mcp/",
+    pathPrefix: process.env.ONECLAW_SECRET_PREFIX || "agentkit/",
   };
 }
 
@@ -62,7 +62,7 @@ export async function bootstrapSecrets(
   });
 
   const vaultId = cfg.vaultId || (await resolveVaultId(client));
-  const prefix = cfg.pathPrefix || "base-mcp/";
+  const prefix = cfg.pathPrefix || "agentkit/";
   const secrets: BaseMcpSecrets = {};
 
   const entries = Object.entries(DEFAULT_SECRET_MAP) as [

@@ -157,10 +157,10 @@ Set `ONECLAW_CHAIN_ID=84532` in your MCP config to target Sepolia.
 
 ## Vault Path Conventions
 
-Recommended secret path layout for Base MCP:
+Recommended secret path layout for @1claw/agentkit:
 
 ```
-base-mcp/
+agentkit/
 ├── seed-phrase              # BIP-39 mnemonic
 ├── coinbase-api-key-name   # Coinbase Developer Platform key name
 ├── coinbase-api-private-key # CDP private key (EC)
@@ -169,11 +169,11 @@ base-mcp/
 └── neynar-api-key          # Neynar Farcaster API key
 ```
 
-All stored under a single `base-mcp/` prefix so one policy grants access to all:
+All stored under a single `agentkit/` prefix so one policy grants access to all:
 
 ```bash
 1claw policy create \
-  --paths "base-mcp/*" \
+  --paths "agentkit/*" \
   --permissions read
 ```
 
@@ -181,6 +181,6 @@ To restrict further (e.g., social bot only needs Neynar):
 
 ```bash
 1claw policy create \
-  --paths "base-mcp/neynar-api-key" \
+  --paths "agentkit/neynar-api-key" \
   --permissions read
 ```

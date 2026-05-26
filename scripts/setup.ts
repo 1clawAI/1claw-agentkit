@@ -60,11 +60,11 @@ async function setup(): Promise<void> {
     "";
 
   if (!apiKey) {
-    console.log("This script provisions the 1Claw infrastructure for Base MCP:");
+    console.log("This script provisions the 1Claw infrastructure for @1claw/agentkit:");
     console.log("  • Vault (encrypted secret storage)");
     console.log("  • Agent (with Intents API + Shroud + Base guardrails)");
     console.log("  • Signing key (Base chain, TEE-backed)");
-    console.log("  • Access policy (agent can read base-mcp/* secrets)");
+    console.log("  • Access policy (agent can read agentkit/* secrets)");
     console.log("");
     console.log("You need a 1Claw human API key (starts with 1ck_).");
     console.log("Get one at: https://1claw.xyz → Settings → API Keys");
@@ -210,7 +210,7 @@ async function setup(): Promise<void> {
     vault.id,
     agent.id,
     ["read"],
-    { secretPathPattern: "base-mcp/*" },
+    { secretPathPattern: "agentkit/*" },
   );
   if (!policyResp.data) throw new Error(policyResp.error?.message || "Failed to create policy");
   const policy = policyResp.data;
@@ -238,33 +238,27 @@ async function setup(): Promise<void> {
     console.log(`  ${result.agentAddress}`);
   }
   console.log("");
-  console.log("─── Next: Store your Base MCP secrets ───");
+  console.log("─── Next: Store your secrets ───");
   console.log("");
-  console.log("Store the secrets your Base MCP tools need:");
+  console.log("Install the CLI and store the secrets your agent needs:");
   console.log("");
-  console.log(`  # Required for wallet operations:`);
-  console.log(
-    `  curl -X PUT ${API_URL}/v1/vaults/${vault.id}/secrets/base-mcp/seed-phrase \\`
-  );
-  console.log(`    -H "Authorization: Bearer YOUR_TOKEN" \\`);
-  console.log(`    -H "Content-Type: application/json" \\`);
-  console.log(`    -d '{"value": "your twelve word seed phrase here"}'`);
+  console.log(`  npm install -g @1claw/cli`);
+  console.log(`  1claw login`);
   console.log("");
-  console.log("  Or use the CLI:");
   console.log(
-    `  npx @1claw/cli secret put base-mcp/seed-phrase --vault ${vault.id} --value "your seed phrase"`
+    `  1claw secret put agentkit/seed-phrase --vault ${vault.id} --value "your seed phrase"`
   );
   console.log(
-    `  npx @1claw/cli secret put base-mcp/alchemy-api-key --vault ${vault.id} --value "your_key"`
+    `  1claw secret put agentkit/alchemy-api-key --vault ${vault.id} --value "your_key"`
   );
   console.log(
-    `  npx @1claw/cli secret put base-mcp/coinbase-api-private-key --vault ${vault.id} --value "..."`
+    `  1claw secret put agentkit/coinbase-api-private-key --vault ${vault.id} --value "..."`
   );
   console.log(
-    `  npx @1claw/cli secret put base-mcp/neynar-api-key --vault ${vault.id} --value "..."`
+    `  1claw secret put agentkit/neynar-api-key --vault ${vault.id} --value "..."`
   );
   console.log(
-    `  npx @1claw/cli secret put base-mcp/openrouter-api-key --vault ${vault.id} --value "..."`
+    `  1claw secret put agentkit/openrouter-api-key --vault ${vault.id} --value "..."`
   );
 
   console.log("");
@@ -273,9 +267,9 @@ async function setup(): Promise<void> {
 
   const mcpConfig = {
     mcpServers: {
-      "base-mcp-secure": {
+      "1claw-agentkit": {
         command: "npx",
-        args: ["@1claw/base-mcp-secure"],
+        args: ["@1claw/agentkit"],
         env: {
           ONECLAW_AGENT_API_KEY: result.agentApiKey,
           ...(isTestnet ? { ONECLAW_CHAIN_ID: "84532" } : {}),
@@ -295,7 +289,7 @@ async function setup(): Promise<void> {
   console.log("");
   console.log("─── What you get with both MCPs ───");
   console.log("");
-  console.log("  base-mcp-secure:");
+  console.log("  1claw-agentkit:");
   console.log("    • transfer_funds, erc20_transfer, deploy_contract (TEE-signed)");
   console.log("    • get_balance, get_morpho_vaults, mint_nft, onramp");
   console.log("    • Farcaster (resolve_basename, get_farcaster_user)");
