@@ -29,6 +29,9 @@ interface SetupResult {
 }
 
 function prompt(question: string, hide = false): Promise<string> {
+  if (!process.stdin.isTTY) {
+    return Promise.resolve("");
+  }
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -78,9 +81,21 @@ async function setup(): Promise<void> {
   console.log("");
   console.log("Connecting to 1Claw API...");
 
+  // Authenticate with the human API key
+  const authResp = await fetch(`${API_URL}/v1/auth/api-key-token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ api_key: apiKey }),
+  });
+  if (!authResp.ok) {
+    const err = await authResp.text();
+    throw new Error(`Authentication failed (${authResp.status}): ${err}`);
+  }
+  const { access_token } = (await authResp.json()) as { access_token: string };
+
   const client = new OneclawClient({
     baseUrl: API_URL,
-    apiKey,
+    token: access_token,
   });
 
   // Ask for optional guardrail config
@@ -102,28 +117,33 @@ async function setup(): Promise<void> {
 
   // 1. Create vault
   console.log("  [1/4] Creating vault...");
-  let vault;
+  let vault: { id: string; name: string } | undefined;
   try {
-    const vaults = await client.vaults.list();
-    vault = vaults.vaults?.find((v: { name: string }) => v.name === "base-mcp-keys");
-    if (vault) {
-      console.log(`        → Using existing vault "${vault.name}" (${vault.id})`);
+    const resp = await client.vault.list();
+    const existing = resp.data?.vaults?.find(
+      (v: { name: string }) => v.name === "base-mcp-keys"
+    );
+    if (existing) {
+      vault = existing;
+      console.log(`        → Using existing vault "${vault!.name}" (${vault!.id})`);
     }
   } catch {
     // ignore, create fresh
   }
 
   if (!vault) {
-    vault = await client.vaults.create({
+    const resp = await client.vault.create({
       name: "base-mcp-keys",
       description: "Secrets for @1claw/base-mcp-secure (Base MCP + 1Claw integration)",
     });
+    if (!resp.data) throw new Error(resp.error?.message || "Failed to create vault");
+    vault = resp.data;
     console.log(`        → Created vault "${vault.name}" (${vault.id})`);
   }
 
   // 2. Create agent
   console.log("  [2/4] Creating agent with guardrails...");
-  const agent = await client.agents.create({
+  const agentResp = await client.agents.create({
     name: "base-mcp-agent",
     description:
       "Secured Base MCP agent — TEE signing, Shroud inspection, guardrail-enforced",
@@ -151,38 +171,56 @@ async function setup(): Promise<void> {
         action: "block",
       },
     },
-  });
+  } as any);
+  if (!agentResp.data) throw new Error(agentResp.error?.message || "Failed to create agent");
+  const agent = agentResp.data.agent;
+  const agentApiKey = agentResp.data.api_key || "";
   console.log(`        → Created agent "${agent.name}" (${agent.id})`);
-  console.log(`        → Agent API key: ${agent.api_key}`);
+  console.log(`        → Agent API key: ${agentApiKey}`);
 
   // 3. Provision signing key
   console.log("  [3/4] Provisioning Base signing key...");
   let signingAddress = "";
   try {
-    const sk = await client.signingKeys.create(agent.id, { chain: "ethereum" });
-    signingAddress = sk.address || "";
-    console.log(`        → Signing key ready (address: ${signingAddress})`);
+    const skResp = await fetch(`${API_URL}/v1/agents/${agent.id}/signing-keys`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${access_token}`,
+      },
+      body: JSON.stringify({ chain: "ethereum" }),
+    });
+    if (skResp.ok) {
+      const sk = (await skResp.json()) as { address?: string };
+      signingAddress = sk.address || "";
+      console.log(`        → Signing key ready (address: ${signingAddress})`);
+    } else {
+      const errText = await skResp.text();
+      console.log(`        → Signing key: ${errText || skResp.statusText}`);
+    }
   } catch (err) {
     console.log(
-      `        → Signing key: ${(err as Error).message || "may already exist"}`
+      `        → Signing key: ${(err as Error).message || "skipped"}`
     );
   }
 
   // 4. Create access policy
   console.log("  [4/4] Creating access policy...");
-  const policy = await client.access.create(vault.id, {
-    principal_type: "agent",
-    principal_id: agent.id,
-    secret_path_pattern: "base-mcp/*",
-    permissions: ["read"],
-  });
+  const policyResp = await client.access.grantAgent(
+    vault.id,
+    agent.id,
+    ["read"],
+    { secretPathPattern: "base-mcp/*" },
+  );
+  if (!policyResp.data) throw new Error(policyResp.error?.message || "Failed to create policy");
+  const policy = policyResp.data;
   console.log(`        → Policy created (${policy.id})`);
 
   // Done — output results
   const result: SetupResult = {
     vaultId: vault.id,
     agentId: agent.id,
-    agentApiKey: agent.api_key,
+    agentApiKey: agentApiKey,
     agentAddress: signingAddress,
     policyId: policy.id,
   };
