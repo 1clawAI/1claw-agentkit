@@ -165,7 +165,7 @@ Together they enable flows like:
 ### What the agent CAN'T do (even if prompt-injected)
 
 - Transfer to unlisted addresses (blocked by `tx_to_allowlist`)
-- Exceed daily spend (blocked by `tx_daily_limit_eth`)
+- Exceed daily spend (blocked by `tx_daily_limit`)
 - Move to another chain (blocked by `tx_allowed_chains`)
 - Read the seed phrase (blocked by Intents API private key gating)
 - Replay a transaction (blocked by idempotency keys)

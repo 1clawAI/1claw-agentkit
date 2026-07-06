@@ -150,8 +150,8 @@ async function setup(): Promise<void> {
     intents_api_enabled: true,
     shroud_enabled: true,
     tx_allowed_chains: ["base"],
-    tx_max_value_eth: maxTx || "0.01",
-    tx_daily_limit_eth: dailyLimit || "0.05",
+    tx_max_value: maxTx || "0.01",
+    tx_daily_limit: dailyLimit || "0.05",
     vault_ids: [vault.id],
     shroud_config: {
       pii_policy: "redact",

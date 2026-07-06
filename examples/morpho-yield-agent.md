@@ -91,7 +91,7 @@ If you encounter an error or anomalous rate (>100% APY), STOP and report rather 
 |--------|-----------|
 | Seed phrase exfiltration | Never on disk. MPC client custody (Pro+) means even a 1Claw breach can't reconstruct it. |
 | Prompt injection via Farcaster bio | Shroud's 11-layer pipeline detects and blocks injection attempts before the model processes them. |
-| Unlimited spend | `tx_daily_limit_eth: 0.02` (~$50) hard cap, enforced server-side in TEE. |
+| Unlimited spend | `tx_daily_limit: 0.02` (~$50) hard cap, enforced per-chain server-side in TEE. |
 | Rug-pull contract interaction | `tx_to_allowlist` restricts destinations to known Morpho vaults only. |
 | Replay attack | Idempotency keys on every transaction prevent duplicate broadcasts. |
 | Cross-chain pivot | `tx_allowed_chains: ["base"]` — cannot be overridden by the agent. |
