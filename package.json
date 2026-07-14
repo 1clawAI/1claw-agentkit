@@ -1,7 +1,7 @@
 {
   "name": "@1claw/agentkit",
   "version": "0.1.1",
-  "description": "Secure AgentKit wallet for autonomous AI agents on Base — TEE-backed signing, programmatic guardrails, and zero secrets on disk via 1Claw",
+  "description": "Secure AgentKit wallet for autonomous AI agents on Base \u2014 TEE-backed signing, programmatic guardrails, and zero secrets on disk via 1Claw",
   "license": "MIT",
   "type": "module",
   "main": "dist/main.js",
@@ -19,7 +19,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "@1claw/sdk": "^0.38.0",
+    "@1claw/sdk": "^0.41.0",
     "@modelcontextprotocol/sdk": "^1.12.0"
   },
   "devDependencies": {
@@ -33,8 +33,12 @@
     "@coinbase/agentkit": ">=0.2.0"
   },
   "peerDependenciesMeta": {
-    "@coinbase/coinbase-sdk": { "optional": true },
-    "@coinbase/agentkit": { "optional": true }
+    "@coinbase/coinbase-sdk": {
+      "optional": true
+    },
+    "@coinbase/agentkit": {
+      "optional": true
+    }
   },
   "engines": {
     "node": ">=20.0.0"
