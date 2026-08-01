@@ -280,6 +280,57 @@ Agent uses AgentKit to act onchain
   → everything is on Base
 ```
 
+## New in v0.42: Automations, Memory, Runtimes & Discovery
+
+### Automations
+
+Schedule recurring onchain actions — yield harvesting, rebalancing, or periodic health checks:
+
+```typescript
+import { createAutomation } from "@1claw/agentkit";
+
+await createAutomation({
+  agentApiKey: "ocv_...",
+  name: "daily-yield-harvest",
+  schedule: "0 9 * * *", // every day at 9am UTC
+  action: { type: "tool_call", tool: "morpho_withdraw_all" },
+});
+```
+
+### Agent Memory
+
+Persist context across agent sessions — market observations, user preferences, or strategy state:
+
+```typescript
+import { storeMemory, searchMemory } from "@1claw/agentkit";
+
+await storeMemory({ agentApiKey: "ocv_...", content: "ETH/USDC pool APY dropped below 3%" });
+const relevant = await searchMemory({ agentApiKey: "ocv_...", query: "pool APY" });
+```
+
+### Runtimes
+
+Deploy your AgentKit agent to a managed runtime with built-in secret injection and auto-restart:
+
+```typescript
+import { deployRuntime } from "@1claw/agentkit";
+
+await deployRuntime({
+  agentApiKey: "ocv_...",
+  image: "ghcr.io/my-org/my-agent:latest",
+  env: { CHAIN: "base" },
+});
+```
+
+### Agent Discovery
+
+Publish your agent to the 1Claw directory so other agents and humans can discover it:
+
+```bash
+1claw agent update <agent-id> --discoverable true \
+  --listing-description "Autonomous Morpho yield optimizer on Base"
+```
+
 ## Contributing
 
 PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
