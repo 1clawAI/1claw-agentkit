@@ -280,20 +280,25 @@ Agent uses AgentKit to act onchain
   → everything is on Base
 ```
 
-## New in v0.42: Automations, Memory, Runtimes & Discovery
+## New in v0.43: Automations, Memory, Runtimes & Discovery
 
 ### Automations
 
-Schedule recurring onchain actions — yield harvesting, rebalancing, or periodic health checks:
+Schedule recurring workflows via the 1Claw SDK (`workflow_spec` + cron). Create from a human token (dashboard/CLI/SDK) — agents can be bound as the automation's `agent_id`:
 
 ```typescript
-import { createAutomation } from "@1claw/agentkit";
+import { OneclawClient } from "@1claw/sdk";
 
-await createAutomation({
-  agentApiKey: "ocv_...",
+const client = new OneclawClient({ apiKey: "1ck_..." });
+
+await client.automations.create({
   name: "daily-yield-harvest",
-  schedule: "0 9 * * *", // every day at 9am UTC
-  action: { type: "tool_call", tool: "morpho_withdraw_all" },
+  agent_id: "<agent-uuid>",
+  trigger_type: "cron",
+  cron_expr: "0 9 * * *", // every day at 9am UTC
+  workflow_spec: {
+    steps: [{ type: "http", binding: "morpho", method: "POST", path: "/harvest" }],
+  },
 });
 ```
 
