@@ -2,9 +2,13 @@
 
 **Secure AgentKit wallet for autonomous AI agents on Base.**
 
-A hardened MCP server built on [Coinbase AgentKit](https://github.com/coinbase/agentkit) that lets autonomous agents operate on Base with TEE-backed signing, programmatic guardrails, and zero secrets on disk.
+Coinbase [AgentKit](https://github.com/coinbase/agentkit) gives agents onchain tools: transfers, swaps, contract calls. Running it unattended means storing a seed phrase or private key somewhere the agent can read. One bad prompt or poisoned input can drain the wallet before a human notices.
 
-> Your agent gets the full onchain toolkit. 1Claw makes sure it never actually holds the keys.
+This MCP server wraps AgentKit with 1Claw's vault, Intents API, and optional Shroud inspection. Credentials resolve from HSM-encrypted storage at boot. Signing happens server-side with per-agent guardrails (daily caps, address allowlists, chain restrictions). Keys never sit in `.env` or config JSON on disk.
+
+Use this for cron jobs, trading bots, and multi-agent systems that run without a human approving every transaction. For interactive chat where you click approve on each tx, Base's hosted MCP at [mcp.base.org](https://docs.base.org/ai-agents/quickstart) is the simpler path.
+
+> Your agent gets the full onchain toolkit. 1Claw holds the keys and enforces the rules.
 
 ## Which Should I Use?
 
@@ -21,7 +25,7 @@ A hardened MCP server built on [Coinbase AgentKit](https://github.com/coinbase/a
 
 ## The Problem
 
-AgentKit gives agents powerful onchain tools — transfers, contract calls, DeFi interactions. But running AgentKit autonomously means storing seed phrases or API keys somewhere, and trusting the agent (or whatever prompts it) not to drain the wallet.
+AgentKit gives agents onchain tools: transfers, contract calls, DeFi interactions. Running it autonomously means storing seed phrases or API keys somewhere, and trusting the agent (or whatever prompts it) not to drain the wallet.
 
 Without guardrails:
 - A prompt injection through a poisoned input can trigger unlimited transfers
