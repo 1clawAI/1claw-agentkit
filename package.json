@@ -1,6 +1,6 @@
 {
   "name": "@1claw/agentkit",
-  "version": "0.43.5",
+  "version": "0.48.2",
   "description": "Secure AgentKit wallet for autonomous AI agents on Base — TEE-backed signing, programmatic guardrails, and zero secrets on disk via 1Claw",
   "license": "MIT",
   "type": "module",
@@ -20,7 +20,7 @@
     "prepublishOnly": "npm run build"
   },
   "dependencies": {
-    "@1claw/sdk": "^0.43.5",
+    "@1claw/sdk": "^0.48.0",
     "@modelcontextprotocol/sdk": "^1.12.0"
   },
   "publishConfig": {
