@@ -340,6 +340,19 @@ Publish your agent to the 1Claw directory so other agents and humans can discove
   --listing-description "Autonomous Morpho yield optimizer on Base"
 ```
 
+## Platform v0.56+ (HITL, HFA, Safe, guardrail governance)
+
+AgentKit runs on 1Claw API **v0.56.2+**. Configure on agents in the dashboard or via `@1claw/sdk` / CLI — not in this MCP package:
+
+| Capability | AgentKit impact |
+|------------|-----------------|
+| **Graduated HITL** | High-value or policy-matched txs return `202 awaiting_approval`; humans approve in dashboard or mobile before signing proceeds. |
+| **Human Factor Auth** | Treasury-style flows use passkey/password step-up when org spend policies require it (embedded wallets via `@1claw/wallet-react`). |
+| **Guardrail governance** | Execution binding guardrails support shadow/enforce; **widening** agent or binding guardrails queues `policy_change` approval. Replay and shadow reports via org APIs. |
+| **Safe foundation** | Counterfactual Gnosis Safe accounts per agent (`1claw agent accounts list|migrate`); module registry + allowance sync (on-chain deploy pending Guard audit). |
+
+Multichain signing (EVM, BTC, SOL, XRP, ADA, TRX) is unchanged in v0.56 — Vault/Shroud use `rust-bitcoin`, `solana-sdk` v4, and `xrpl-rust` 1.1.0.
+
 ## Contributing
 
 PRs welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
