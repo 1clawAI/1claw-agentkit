@@ -342,7 +342,7 @@ Publish your agent to the 1Claw directory so other agents and humans can discove
 
 ## Platform v0.56+ (HITL, HFA, Safe, guardrail governance)
 
-AgentKit runs on 1Claw API **v0.56.2+**. Configure on agents in the dashboard or via `@1claw/sdk` / CLI — not in this MCP package:
+AgentKit runs on 1Claw API **v0.58+**. Configure on agents in the dashboard or via `@1claw/sdk` / CLI — not in this MCP package:
 
 | Capability | AgentKit impact |
 |------------|-----------------|
