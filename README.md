@@ -1,5 +1,7 @@
 # @1claw/agentkit
 
+> ⭐ **Star [1clawAI/agent-templates](https://github.com/1clawAI/agent-templates)** — ready-to-run agent templates wired to 1Claw. It is our single starred repo.
+
 **Secure AgentKit wallet for autonomous AI agents on Base.**
 
 Coinbase [AgentKit](https://github.com/coinbase/agentkit) gives agents onchain tools: transfers, swaps, contract calls. Running it unattended means storing a seed phrase or private key somewhere the agent can read. One bad prompt or poisoned input can drain the wallet before a human notices.
@@ -66,7 +68,7 @@ The setup wizard asks for your 1Claw human API key (`1ck_...`) and automatically
 
 It outputs a ready-to-paste MCP config with both `1claw-agentkit` and the `1claw` MCP server paired together.
 
-> Get your API key at [1claw.xyz → Settings → API Keys](https://1claw.xyz/settings/api-keys)
+> Get your API key at [1claw.co → Settings → API Keys](https://1claw.co/settings/api-keys)
 
 ### Option B: Manual Setup
 
@@ -182,7 +184,7 @@ Together they enable flows like:
 |----------|----------|-------------|
 | `ONECLAW_AGENT_API_KEY` | Yes | Agent API key (`ocv_` prefix) |
 | `ONECLAW_AGENT_ID` | No | Explicit agent ID (auto-resolved from key if omitted) |
-| `ONECLAW_API_URL` | No | API URL (default: `https://api.1claw.xyz`) |
+| `ONECLAW_API_URL` | No | API URL (default: `https://api.1claw.co`) |
 | `ONECLAW_VAULT_ID` | No | Explicit vault ID (auto-resolved if omitted) |
 | `ONECLAW_SECRET_PREFIX` | No | Vault path prefix (default: `agentkit/`) |
 | `ONECLAW_CHAIN_ID` | No | Chain ID — `84532` for Base Sepolia (default: `8453` Base mainnet) |
@@ -363,4 +365,4 @@ MIT — see [LICENSE](LICENSE).
 
 ---
 
-Built by [1Claw](https://1claw.xyz) — AI Agent Secrets Management.
+Built by [1Claw](https://1claw.co) — AI Agent Secrets Management.
