@@ -53,7 +53,7 @@ export class OneclawIntentsWalletProvider {
   private _address?: string;
 
   constructor(config: IntentsWalletConfig) {
-    const apiUrl = config.apiUrl || process.env.ONECLAW_API_URL || "https://api.1claw.xyz";
+    const apiUrl = config.apiUrl || process.env.ONECLAW_API_URL || "https://api.1claw.co";
     const agentId = config.agentId || process.env.ONECLAW_AGENT_ID;
     const apiKey = config.agentApiKey || process.env.ONECLAW_AGENT_API_KEY;
 

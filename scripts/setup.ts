@@ -18,7 +18,7 @@
 import { OneclawClient } from "@1claw/sdk";
 import * as readline from "readline";
 
-const API_URL = process.env.ONECLAW_API_URL || "https://api.1claw.xyz";
+const API_URL = process.env.ONECLAW_API_URL || "https://api.1claw.co";
 
 interface SetupResult {
   vaultId: string;
@@ -67,7 +67,7 @@ async function setup(): Promise<void> {
     console.log("  • Access policy (agent can read agentkit/* secrets)");
     console.log("");
     console.log("You need a 1Claw human API key (starts with 1ck_).");
-    console.log("Get one at: https://1claw.xyz → Settings → API Keys");
+    console.log("Get one at: https://1claw.co → Settings → API Keys");
     console.log("");
     apiKey = await prompt("Enter your 1Claw API key (1ck_...): ");
   }
@@ -311,7 +311,7 @@ setup().catch((err) => {
   console.error("");
   console.error("Common issues:");
   console.error("  • Invalid API key — make sure it starts with 1ck_");
-  console.error("  • Expired key — generate a new one at https://1claw.xyz/settings/api-keys");
+  console.error("  • Expired key — generate a new one at https://1claw.co/settings/api-keys");
   console.error("  • Plan limit — Free tier allows 2 agents; upgrade for more");
   process.exit(1);
 });

@@ -60,7 +60,7 @@ If you were running AgentKit (or the old base-mcp) locally, your config likely l
 ### Step 1: Create a 1Claw Account (2 min)
 
 ```bash
-# Sign up at https://1claw.xyz or use the CLI
+# Sign up at https://1claw.co or use the CLI
 npx @1claw/cli login
 ```
 

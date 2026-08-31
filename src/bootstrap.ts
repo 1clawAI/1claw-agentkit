@@ -36,7 +36,7 @@ const DEFAULT_SECRET_MAP: Record<keyof BaseMcpSecrets, string> = {
 
 function resolveConfig(): BootstrapConfig {
   return {
-    apiUrl: process.env.ONECLAW_API_URL || "https://api.1claw.xyz",
+    apiUrl: process.env.ONECLAW_API_URL || "https://api.1claw.co",
     agentId: process.env.ONECLAW_AGENT_ID,
     agentApiKey: process.env.ONECLAW_AGENT_API_KEY,
     vaultId: process.env.ONECLAW_VAULT_ID,
