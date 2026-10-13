@@ -21,14 +21,14 @@
   },
   "dependencies": {
     "@1claw/sdk": "^0.61.0",
-    "@modelcontextprotocol/sdk": "^1.12.0"
+    "@modelcontextprotocol/sdk": "^1.32.1"
   },
   "publishConfig": {
     "access": "public"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
-    "eslint": "^9.0.0",
+    "eslint": "^10.12.0",
     "tsx": "^4.19.0",
     "typescript": "^5.7.0"
   },
@@ -71,5 +71,15 @@
     "ai",
     "coinbase",
     "agentkit"
-  ]
+  ],
+  "overrides": {
+    "@hono/node-server": ">=2.0.10 <3",
+    "body-parser": ">=2.3.0",
+    "esbuild": ">=0.28.1 <0.29",
+    "fast-uri": ">=3.1.8 <4",
+    "hono": ">=4.13.7 <5",
+    "ip-address": ">=10.7.1 <11",
+    "qs": ">=6.16.0"
+  },
+  "_overridesComment": "This package is OUTSIDE the pnpm workspace, so it inherits none of the root package.json's pnpm.overrides and has to carry its own. The floors here are copied verbatim from the root for exactly the advisories npm reports against this tree; keep them in step when the root moves. Every one is a transitive dependency, so an override is the fix -- the direct parent has not shipped a release that moves it. Two differ from the root deliberately: `body-parser` is >=2.3.0 here because @modelcontextprotocol/sdk brings express 5.x and therefore body-parser 2.x, and the root's >=1.20.3 floor is satisfied by the vulnerable 2.2.2 (advisory range >=2.0.0 <2.3.0) -- a floor can be met and still be vulnerable when a major bumps underneath it. `esbuild` matches the root's floor."
 }
